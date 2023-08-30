@@ -6,6 +6,7 @@ import logica.Usuario;
 
 public class ControladoraPersistencia {
     UsuarioJpaController usuarioJpa = new UsuarioJpaController();
+    RolJpaController rolJpa = new RolJpaController();
     
     
     public void createUsuario(Usuario usuario) {

@@ -13,6 +13,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import logica.Rol;
 import logica.Usuario;
 import persistencia.exceptions.NonexistentEntityException;
 
@@ -27,7 +28,7 @@ public class UsuarioJpaController implements Serializable {
     }
     private EntityManagerFactory emf = null;
     
-    public UsuarioJpaController(){
+     public UsuarioJpaController(){
         emf = Persistence.createEntityManagerFactory("com.mycompany_login_jar_1.0-SNAPSHOTPU");
     }
 
@@ -40,7 +41,16 @@ public class UsuarioJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Rol unRol = usuario.getUnRol();
+            if (unRol != null) {
+                unRol = em.getReference(unRol.getClass(), unRol.getId());
+                usuario.setUnRol(unRol);
+            }
             em.persist(usuario);
+            if (unRol != null) {
+                unRol.getUsuarios().add(usuario);
+                unRol = em.merge(unRol);
+            }
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -54,7 +64,22 @@ public class UsuarioJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
+            Usuario persistentUsuario = em.find(Usuario.class, usuario.getId());
+            Rol unRolOld = persistentUsuario.getUnRol();
+            Rol unRolNew = usuario.getUnRol();
+            if (unRolNew != null) {
+                unRolNew = em.getReference(unRolNew.getClass(), unRolNew.getId());
+                usuario.setUnRol(unRolNew);
+            }
             usuario = em.merge(usuario);
+            if (unRolOld != null && !unRolOld.equals(unRolNew)) {
+                unRolOld.getUsuarios().remove(usuario);
+                unRolOld = em.merge(unRolOld);
+            }
+            if (unRolNew != null && !unRolNew.equals(unRolOld)) {
+                unRolNew.getUsuarios().add(usuario);
+                unRolNew = em.merge(unRolNew);
+            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -83,6 +108,11 @@ public class UsuarioJpaController implements Serializable {
                 usuario.getId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The usuario with id " + id + " no longer exists.", enfe);
+            }
+            Rol unRol = usuario.getUnRol();
+            if (unRol != null) {
+                unRol.getUsuarios().remove(usuario);
+                unRol = em.merge(unRol);
             }
             em.remove(usuario);
             em.getTransaction().commit();
