@@ -4,7 +4,13 @@ import java.util.List;
 import persistencia.ControladoraPersistencia;
 
 public class ControladoraLogica {
-    ControladoraPersistencia controladoraPersis = new ControladoraPersistencia();
+    ControladoraPersistencia controladoraPersis = null;
+
+    public ControladoraLogica() {
+        controladoraPersis = new ControladoraPersistencia();
+    }
+    
+    
     
     public void crearUsuario(String nombre, String password, String rol){
         
@@ -56,6 +62,25 @@ public class ControladoraLogica {
             }
         }
         return null;
+    }
+
+    public Usuario encontrarUsuario(int idUser) {
+        return controladoraPersis.encontrarUsuario(idUser);
+    }
+
+    public void editarUsuario(int id, String nombre, String password, String rol) {
+        Usuario usuario = new Usuario();
+        usuario.setId(id);
+        usuario.setNombre(nombre);
+        usuario.setPassword(password);
+        Rol rolEncontrado = this.encontrarRol(rol);
+        usuario.setUnRol(rolEncontrado);
+        
+        controladoraPersis.editarUsuario(usuario);
+    }
+
+    public void borrarUsuario(int idUser) {
+        controladoraPersis.borrarUsuario(idUser);
     }
     
 }

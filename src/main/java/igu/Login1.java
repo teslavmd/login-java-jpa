@@ -152,8 +152,9 @@ public class Login1 extends javax.swing.JFrame {
             String rol = user.getUnRol().getNombreRol();
             String nombreUsuario = user.getNombre();
             String rolInfo = user.getUnRol().getDescripcion();
+            int idUser = user.getId();
             if(rol.equals("admin")){
-                PrincipalAdmin principalAdmin = new PrincipalAdmin(controladora, nombreUsuario, rolInfo);
+                PrincipalAdmin principalAdmin = new PrincipalAdmin(controladora, nombreUsuario, rolInfo, idUser);
                 principalAdmin.setVisible(true);
                 principalAdmin.setLocationRelativeTo(null);
                 this.dispose();

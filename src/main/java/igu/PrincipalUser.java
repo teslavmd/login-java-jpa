@@ -7,7 +7,7 @@ import logica.Usuario;
 
 public class PrincipalUser extends javax.swing.JFrame {
 
-    ControladoraLogica controladora;
+    ControladoraLogica controladora = null;
     String nombreUsuario = "";
     String rolUsuario = "";    
     
@@ -133,6 +133,7 @@ public class PrincipalUser extends javax.swing.JFrame {
 
     private void btnRecargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRecargarActionPerformed
         // TODO add your handling code here:
+        cargarTabla();
     }//GEN-LAST:event_btnRecargarActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
