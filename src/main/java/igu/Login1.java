@@ -147,10 +147,28 @@ public class Login1 extends javax.swing.JFrame {
         String nombre = txtUsuario.getText();
         String password = txtPassword.getText();
         
-        List<Usuario> listUsuarios = controladora.traerUsuarios();
+        Usuario user = controladora.validar(nombre, password);
+        if(user != null){
+            String rol = user.getUnRol().getNombreRol();
+            String nombreUsuario = user.getNombre();
+            String rolInfo = user.getUnRol().getDescripcion();
+            if(rol.equals("admin")){
+                PrincipalAdmin principalAdmin = new PrincipalAdmin(controladora, nombreUsuario, rolInfo);
+                principalAdmin.setVisible(true);
+                principalAdmin.setLocationRelativeTo(null);
+                this.dispose();
+            }else if(rol.equals("user")){
+                PrincipalUser principalUser = new PrincipalUser(controladora, nombreUsuario, rolInfo);
+                principalUser.setVisible(true);
+                principalUser.setLocationRelativeTo(null);
+                this.dispose();
+
+            }
+        }else{
+            textArea.setText("Usuario y contraseña incorrectos");
+        }
         
-        String mensaje = controladora.validar(nombre, password);
-        textArea.setText(mensaje);
+        
 
        
         

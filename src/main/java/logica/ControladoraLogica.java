@@ -6,7 +6,17 @@ import persistencia.ControladoraPersistencia;
 public class ControladoraLogica {
     ControladoraPersistencia controladoraPersis = new ControladoraPersistencia();
     
-    public void crearUsuario(Usuario usuario){
+    public void crearUsuario(String nombre, String password, String rol){
+        
+        Usuario usuario = new Usuario();
+        usuario.setNombre(nombre);
+        usuario.setPassword(password);
+        Rol rolBD = this.encontrarRol(rol);
+        if(rolBD != null){
+            usuario.setUnRol(rolBD); 
+        }
+        
+        
         controladoraPersis.createUsuario(usuario);
     }
 
@@ -14,19 +24,38 @@ public class ControladoraLogica {
         return controladoraPersis.findAll();
     }
 
-    public String validar(String nombre, String password) {
+    public Usuario validar(String nombre, String password) {
         
-        String mensaje = "";
+        Usuario usuarioLog = null;
         List<Usuario> listUsuarios = traerUsuarios();
         
         for(Usuario usuario : listUsuarios){
             if(usuario.getNombre().equals(nombre) && usuario.getPassword().equals(password)){
-                mensaje = "Bienvenido eres el usuario que esta registrado en la base de datos";
-            }else{
-                mensaje = "Datos incorrectos, por favor ingrese nuevamente los datos :D";
+                //mensaje = "Bienvenido eres el usuario que esta registrado en la base de datos";
+                System.out.println("admin aca");
+                usuarioLog = usuario;
+                return usuarioLog;
+            }  
+        }
+        return usuarioLog;
+    }
+
+    public String validarRol(String nombre) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public List<Rol> traerRoles() {
+        return controladoraPersis.traerRoles();
+    }
+
+    private Rol encontrarRol(String rol) {
+        List<Rol> listRol = this.traerRoles();
+        for(Rol rolsito: listRol){
+            if(rolsito.getNombreRol().equals(rol)){
+                return rolsito;
             }
         }
-        return mensaje;
+        return null;
     }
     
 }
